@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ngoge Shan MD - Pair</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    h1 { color: #00e676; margin-bottom: 5px; }
+    p.brand { color: #888; margin-bottom: 30px; font-size: 13px; }
+    #qr-box img { width: 250px; border: 4px solid #00e676; border-radius: 12px; }
+    .btn {
+      background: #00e676;
+      color: #000;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 8px;
+    }
+    input {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #1a1a1a;
+      color: #fff;
+      width: 260px;
+      font-size: 15px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    #pair-code {
+      font-size: 32px;
+      font-weight: bold;
+      color: #00e676;
+      letter-spacing: 6px;
+      margin: 20px 0;
+    }
+    #status { color: #aaa; margin-top: 15px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>🤖 Ngoge Shan MD</h1>
+  <p class="brand">Powered by SwiftBot Tec</p>
+
+  <div id="qr-box">
+    <p style="color:#888">Waiting for QR code...</p>
+  </div>
+
+  <br>
+  <p style="color:#888; margin-bottom:10px;">— OR use Pair Code —</p>
+  <input type="text" id="phone" placeholder="e.g. 254113419225">
+  <br>
+  <button class="btn" onclick="requestPair()">Get Pair Code</button>
+  <div id="pair-code"></div>
+  <div id="status"></div>
+
+  <script>
+    const socket = io();
+    const QRCode = window.QRCode;
+
+    socket.on('qr', async (qr) => {
+      const { default: QR } = await import('https://cdn.jsdelivr.net/npm/qrcode@1.5.3/+esm');
+      const url = await QR.toDataURL(qr);
+      document.getElementById('qr-box').innerHTML = `<img src="${url}">`;
+    });
+
+    socket.on('pair-code', (code) => {
+      document.getElementById('pair-code').innerText = code;
+      document.getElementById('status').innerText = '✅ Enter this code in WhatsApp > Linked Devices';
+    });
+
+    socket.on('pair-error', (err) => {
+      document.getElementById('status').innerText = '❌ Error: ' + err;
+    });
+
+    function requestPair() {
+      const number = document.getElementById('phone').value.trim();
+      if (!number) return alert('Enter your phone number!');
+      document.getElementById('status').innerText = '⏳ Requesting pair code...';
+      socket.emit('request-pair', number);
+    }
+  </script>
+</body>
+</html>
