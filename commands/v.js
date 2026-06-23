@@ -119,7 +119,7 @@ export async function execute({ sock, msg, from, sender, isGroup }) {
       `👤 *From:* ${senderName}\n` +
       `📍 *Chat:* ${chatType}\n` +
       `📱 *Number:* +${sender?.split('@')[0]}\n\n` +
-      `_Revealed by SpeedyMD_ ⚡`;
+      `_Revealed by ngoge-shan MD_⚡`;
 
     // Build message for download
     const msgForDownload = {
