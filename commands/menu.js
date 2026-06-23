@@ -4,22 +4,25 @@ export const description = 'Show all commands';
 
 export async function execute({ sock, msg, from, PREFIX }) {
   const text = `
-┏━━━━━━━━━━━━━━━━━━━┓
-┃   *🤖 NGOGE SHAN MD*   ┃
-┃    _SwiftBot Tec_     ┃
-┗━━━━━━━━━━━━━━━━━━━┛
+*┌─❖*
+*│NGOGE SHAN MD*
+*└┬❖*
+   *│🤖 SwiftBot Tec*
+   *└────────┈❖*
+▬▬▬▬▬▬▬▬▬▬
+> ⌨️ ᴘʀᴇꜰɪx: ${PREFIX}
+> 🟢 ꜱᴛᴀᴛᴜꜱ: Online
+> 📚 ᴄᴏᴍᴍᴀɴᴅꜱ: 5
+> 👑 ᴏᴡɴᴇʀ: Ngoge Shan
+▬▬▬▬▬▬▬▬▬▬
 
-┏━━━ *🔧 GENERAL* ━━━┓
-┃
-┃ ${PREFIX}ping - Check bot status
-┃ ${PREFIX}info - Bot information
-┃ ${PREFIX}joke - Random joke
-┃ ${PREFIX}v - viewonce
-┃ ${PREFIX}menu - Show this menu
-┃
-┗━━━━━━━━━━━━━━━━━━━┛
+*📋 MENU OPTIONS*
 
-📢 *Join our Channel:*
+*1.* 🔧 GENERAL MENU
+
+_Reply with a number to access that section_
+
+📢 *Channel:*
 https://whatsapp.com/channel/0029Vb86btmI1rci3S1NUA0G
 `.trim();
 
