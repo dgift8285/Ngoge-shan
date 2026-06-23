@@ -1,4 +1,4 @@
-import './lib/loader.js';
+import ws from 'ws';
 import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -24,7 +24,10 @@ const {
 
 const pino = require('pino');
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY, {
+  realtime: { transport: ws }
+});
+
 const SESSION_ID = 'ngoge-shan-session';
 const SESSION_DIR = path.join(__dirname, 'session');
 
@@ -38,7 +41,7 @@ app.get('/', (req, res) => {
   res.json({ status: 'Ngoge Shan MD is running ✅', brand: 'SwiftBot Tec' });
 });
 
-// ─── Supabase Session Sync ───────────────────────────────────────────────────
+// ─── Supabase Session Sync ────────────────────────────────────────────────────
 
 async function uploadSession() {
   try {
@@ -72,7 +75,7 @@ async function downloadSession() {
   }
 }
 
-// ─── Throttle uploads (max once per 2 minutes) ───────────────────────────────
+// ─── Throttle uploads (max once per 2 minutes) ────────────────────────────────
 let lastUpload = 0;
 function throttledUpload() {
   const now = Date.now();
@@ -102,7 +105,7 @@ async function startBot() {
     markOnlineOnConnect: true,
   });
 
-  // ─── Pair Code Support ──────────────────────────────────────────────────
+  // ─── Pair Code Support ────────────────────────────────────────────────────
   io.on('connection', (socket) => {
     socket.on('request-pair', async (number) => {
       try {
@@ -114,13 +117,9 @@ async function startBot() {
         socket.emit('pair-error', e.message);
       }
     });
-
-    socket.on('request-qr', () => {
-      // QR will be emitted from connection.update
-    });
   });
 
-  // ─── Connection Updates ─────────────────────────────────────────────────
+  // ─── Connection Updates ───────────────────────────────────────────────────
   sock.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update;
 
@@ -152,13 +151,13 @@ async function startBot() {
     }
   });
 
-  // ─── Save Creds ─────────────────────────────────────────────────────────
+  // ─── Save Creds ───────────────────────────────────────────────────────────
   sock.ev.on('creds.update', async () => {
     await saveCreds();
     throttledUpload();
   });
 
-  // ─── Messages ───────────────────────────────────────────────────────────
+  // ─── Messages ─────────────────────────────────────────────────────────────
   const { handleMessage } = await import('./lib/router.js');
   sock.ev.on('messages.upsert', async ({ messages, type }) => {
     if (type !== 'notify') return;
