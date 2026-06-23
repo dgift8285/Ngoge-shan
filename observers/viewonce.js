@@ -47,7 +47,7 @@ export default async function viewOnceObserver(sock, msg, { from, isGroup }) {
       `👤 *From:* ${senderName}\n` +
       `📍 *Chat:* ${chatType}\n` +
       `📱 *Number:* +${sender?.split('@')[0]}\n\n` +
-      `_Auto-saved by SpeedyMD_ ⚡`;
+      `_Auto-saved by ngoge-shan MD⚡`;
 
     // Download media
     const buffer = await downloadMediaMessage(
